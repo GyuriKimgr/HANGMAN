@@ -32,7 +32,7 @@ typedef struct{
 WORDS data[30];
 
 typedef struct{ //랭킹 아이디 답을 맞춘 횟수
-    char *id; //아이디
+    char id[15]; //아이디
     int correctanswer; //답을 맞춘 횟수/전체단어30개
 }RECORD;
 

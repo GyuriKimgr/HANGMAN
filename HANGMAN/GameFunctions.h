@@ -86,17 +86,25 @@ void PrintingResult(int n, WORDS ans){
 
 void UpdatingRecord(char *userid,int flag){ // user가 play한 기록이 있는지(기록 파일에 ID가 있는지 검사하고 있으면 새로 갱신, 없으면 추가하는 함수) , 정답이면 flag=1, 오답이면 0
     FILE *f=fopen(RCFNAME,"a+");
-    if(ExistsId(userid)!=-1){ //존재, 포인터의 위치: 줄 끝
-        fseek(f,-2,SEEK_CUR);
-        fwrite("02",4,1,f);
+    if(ExistsId(userid)!=-1){
+        //이미 전적이 존재하는 경우 -> 파일을 부분적으로 수정하여 기록 갱신
         return;
     }
     
-    fprintf(f,"%s %02d\n",userid,flag); //새 행에 추가
+    fprintf(f,"%s %d\n",userid,flag); //전적 없는 경우새 행에 추가
     fclose(f);
     return;
 }
 
+int compare (const void* a, const void* b) //qsort 비교함수 (내림차순)
+{
+    if (((RECORD*)a)->correctanswer < ((RECORD*)b)->correctanswer)
+        return 1;
+    else if (((RECORD*)a)->correctanswer > ((RECORD*)b)->correctanswer)
+        return -1;
+    else
+        return 0;
+}
 
 
 

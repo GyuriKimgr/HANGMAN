@@ -69,10 +69,7 @@ int main(void) {
     fclose(lgf);
     
   //게임 구현 부분
-   // RECORD Player[MAX_USER]; 사용자의 플레이 기록을 저장할 구조체 배열
     if(endinput!=1){
-     //   FILE *rcf=fopen(RCFNAME, ""); //플레이 기록 파일 열기
-    //    int playercnt=GetTotalLine(rcf); //hngrcd.txt 파일의 행 수 (유저 별 플레이 기록 저장 id, 정답률)
         WORDS answer; //정답 단어에 대한 정보를 저장할 구조체
         char input_chr; //사용자가 입력
         do {
@@ -100,7 +97,7 @@ int main(void) {
                             printf("\n      행맨 완성. GAME OVER. . .\n");
                             printf("        정답: %s %s\n",answer.word, answer.meaning);
                             break;
-                       }
+                        }
                         chance+=flag;
                         printf("\n\n");
                     }
@@ -113,19 +110,34 @@ int main(void) {
                         UpdatingRecord(input_id,n+1); //정답이면 1, 아니면 0을 인자로 넣음
                         PrintingResult(n,answer); //정답 입력 결과 출력 (0이면 정답, -1이면 오답)
                         break;
-                       }
-                
+                    }
+                    
                 }//while
             } //if문 종료
             
             if(temp==2){ //랭킹 출력
-                printf("==========게임 기록 정보==========\n");
-                printf("랭킹 id  정답률\n");
+                FILE *rcf=fopen(RCFNAME, "r");
+                int playercnt=GetTotalLine(rcf); //hngrcd.txt 파일의 행 수 (유저 별 플레이 기록 저장 id, 정답률)
+                RECORD Player[MAX_USER]; //사용자의 플레이 기록을 파일에서 읽어와 저장할 구조체 포인터
+                int i=0;
+              /*  while (EOF!=fscanf(rcf,"%s %d",Player[i].id,&Player[i].correctanswer)) {
+                    printf("%s %d\n",Player[i].id,Player[i].correctanswer);
+                    i++;
+                } 구조체에 저장이 안되는 문제*/
+                
+                //내림차순 정렬
+                qsort((RECORD *)Player,playercnt,sizeof(int),compare);
+                //출력
+                printf("============게임 기록 정보============\n");
+                printf("    랭킹         id        정답개수\n");
+                for (int j=0;j<playercnt;j++){
+                    printf("    %d등         %s       %d/30문제   \n",j+1,Player[i].id,Player[i].correctanswer);
+                }
                 
             }
         } while(temp!=3);
         free(input_id);
-       
+        
     }
     
     
