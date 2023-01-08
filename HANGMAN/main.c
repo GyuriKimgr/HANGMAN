@@ -16,31 +16,29 @@
  */
 
 #include "Hangman.h" //구조체 및 단어 데이터를 저장한 변수 정의
-#include "Fuctions.h" //함수 정의 헤더 파일
+#include "GameFunctions.h" //게임 구현 함수 정의 헤더 파일
+#include "Signup.h" //로그인/회원가입 기능 함수 정의 헤더 파일
 
-Words data[30]; //단어 정보를 저장할 구조체 배열의 전역변수 선언
-
+ //단어 정보를 저장할 구조체 배열의 전역변수 선언
 int main(void) {
     
     SavingWordData(); //단어별 데이터 저장
     
-    srand((int)time(NULL));
-    LOGIN User[MAX_USER];
+    LOGIN lgUser; //사용자의 로그인 정보를 기록할 구조체
     int temp,endinput=0;
     int num,num2; //로그인에 성공한 사용자의 계정 정보
     FILE *lgf=fopen(LGFNAME, "r");
-    int usercnt=GetTotalLine(lgf); //파일의 행 수(저장된 사용자의 수)
+    int lgusercnt=GetTotalLine(lgf); //hnguser.txt 파일의 행 수(로그인 정보가 있는 사용자의 수)
     
    //로그인 및 회원가입
-    
     printf("====  << HANGMAN GAME >>  ====\nLogin and Play the game!!\n\n");
     printf("1. 로그인 하기\n2. 새로 등록하기\n"); scanf("%d",&temp);
     char *input_id=(char *)malloc(16); char *input_pwd=(char *)malloc(6);
     while(temp!=3){
         switch(temp){
             case 2: //회원가입
-                NewUser(usercnt,User);
-                usercnt++;
+                NewUser(lgusercnt,lgUser);
+                lgusercnt++;
                 temp=1;
                 break;
                 
@@ -50,7 +48,7 @@ int main(void) {
                 
                 if (num==-1){ //id가 존재하지 않음
                     printf("사용자의 ID를 찾을 수 없음.\n1. 새로 등록하기\n3. 종료하기\n"); scanf("%d",&temp);
-                    if (temp==1) NewUser(usercnt,User); //회원가입
+                    if (temp==1) NewUser(lgusercnt,lgUser); //회원가입
                     else {
                         printf("게임을 종료합니다 . . .");
                         return 0;}
@@ -72,33 +70,40 @@ int main(void) {
     fclose(lgf);
     
   //게임 기능 부분
-    RECORD Record[MAX_USER];
+   // RECORD Player[MAX_USER]; 사용자의 플레이 기록을 저장할 구조체 배열
     if(endinput!=1){
-        FILE *rkf=fopen(RKFNAME, "r");
+     //   FILE *rcf=fopen(RCFNAME, ""); //플레이 기록 파일 열기
+    //    int playercnt=GetTotalLine(rcf); //hngrcd.txt 파일의 행 수 (유저 별 플레이 기록 저장 id, 정답률)
         Words answer; //정답 단어에 대한 정보를 저장할 구조체
         char input_chr; //사용자가 입력
-        int rcdcnt=GetTotalLine(rkf);
-        num2=isThereRecord(input_id); //기록이 있는지 확인
-        
         do {
             printf("\n\n1. 게임 시작\n2. 랭킹 보기\n3. 종료하기\n"); scanf("%d",&temp);
             if(temp==1){ //game start!!!
                 char currentstat[20]; //사용자가 답을 입력 할 때마다 보여줄 문자열
                 answer=GeneratingProblem(answer); //정답 데이터 생성
                 int len=(int)strlen(answer.word);
+                int chance=len+5; //처음 주어지는 기회: 문자열의 길이+5
                 Init(currentstat,len);
-                printf("3초 뒤에 시작합니다.(* 기회는 %d번!)\n",len);
+                printf("3초 뒤에 시작합니다.(* 기회는 %d번!)\n",chance);
                 for (int i=3;i>=1;i--) {
                     printf("%d!\n",i); sleep(1);}
                 printf("%s\n",currentstat);
-                int flag;
-                for(int j=0;j<len;j++){
+                while(1){
                     sleep(0.8);
+                    int flag=0;
+                    PrintHANGMAN(chance+flag,flag); //행맨 상태 출력
                     printf("\n알파벳 소문자를 하나 입력하세요(정답을 입력하려면 !입력): ");
                     scanf(" %c",&input_chr);
                     if(input_chr!='!'){
                         flag=SearchAndPrint(currentstat,answer.word,input_chr); //flag: 0 or -1
-                        PrintHANGMAN(len-j-1,flag); //행맨 상태 출력
+                        if (chance+flag==0) {
+                            sleep(1);
+                            printf("\n      행맨 완성. GAME OVER. . .\n");
+                            printf("        정답: %s %s\n",answer.word, answer.meaning);
+                            break;
+                       }
+                        chance+=flag;
+                        printf("\n\n");
                     }
                     else { //정답 입력
                         printf("정답은?: ");
@@ -106,45 +111,26 @@ int main(void) {
                         int n=CheckingAnswer(currentstat,answer.word);
                         printf("loading..\n\n");
                         sleep(1);
-                        if (n==-1) {
-                            printf("틀렸습니다. 정답: %s %s\n",answer.word, answer.meaning);
-                            break;
-                        }
-                        else if (n==0) {
-                            for (int i=0;i<4;i++) printf("*- + - * - +");
-                            printf("\n");
-                            for (int i=0;i<4;i++) printf("*- + - * - +");
-                            printf("\n");
-                            printf("                !!!!정답입니다!!!!                 \n");
-                            printf("         정답: %s %s\n",answer.word, answer.meaning);
-                            for (int i=0;i<4;i++) printf("*- + - * - +");
-                            printf("\n");
-                            for (int i=0;i<4;i++) printf("*- + - * - +");
-                            break;
-                        }
-                    }
-                }
+                        UpdatingRecord(input_id,n+1); //정답이면 1, 아니면 0을 인자로 넣음
+                        PrintingResult(n,answer); //정답 입력 결과 출력 (0이면 정답, -1이면 오답)
+                        break;
+                       }
+                
+                }//while
+            } //if문 종료
+            
+            if(temp==2){ //랭킹 출력
+                printf("==========게임 기록 정보==========\n");
+                printf("랭킹 id  정답률\n");
                 
             }
-            else if(temp==2){ //랭킹 출력
-                printf("==========게임 기록 정보==========\n");
-                printf(".  랭킹    id     시간(초)   난이도\n");
-                ShowRankfile();
-            }
-       } while(temp!=3);
+        } while(temp!=3);
         free(input_id);
-        fclose(rkf);
+       
     }
     
     
-    
-    printf("게임을 종료합니다 . . . \n");
-    
-    
-    
-    
-    
-    return 0;
+    printf("게임을 종료합니다 . . . \n");  return 0;
 }
 
 

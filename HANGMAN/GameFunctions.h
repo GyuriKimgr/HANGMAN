@@ -1,0 +1,110 @@
+//
+//  GameFuctions.h
+//  HANGMAN
+//
+//  Created by SUNJAE on 2023/01/02.
+//
+
+#ifndef GameFuctions_h
+#define GameFuctions_h
+
+#include "Hangman.h"
+#include "Signup.h"
+
+extern Words data[];
+extern char *engword[];
+extern char *krmeaning[];
+
+// 게임 구현에 사용된 함수
+
+void SavingWordData(void){
+    for (int i=0;i<30;i++){
+        data[i].word=engword[i];
+        data[i].meaning=krmeaning[i];
+   }
+   return;
+}
+
+Words GeneratingProblem(Words ans){ //정답 구조체 데이터 생성 후 반환. 랜덤하게 생성
+    srand((int)time(NULL));
+    int i=rand()%30;
+    ans.word=data[i].word;
+    ans.meaning=data[i].meaning;
+    
+    return ans;
+}
+
+char *Init(char currentstat[], int len){ //정답 입력 상태를 초기화 시키는 함수
+    for(int i=0;i<len;i++){
+        currentstat[i]='_';
+    }
+    return currentstat;
+}
+
+int SearchAndPrint(char currentstat[],char answer[], char alph){ //사용자가 입력한 문자가 정답에 있는지 검사하고 결과를 출력하는 함수 (존재하면 0, 존재하지 않으면 -1반환)
+    int flag=-1;
+    for (int i=0;i<strlen(answer);i++)
+        if (answer[i]==alph){
+            currentstat[i]=alph;
+            flag=0; //존재
+        }
+    printf("결과: %s\n",currentstat);
+    return flag;
+    
+}
+
+void PrintHANGMAN(int rmchance, int flag){ //결과에 따라 행맨 상태를 출력해주는 함수
+    printf("남은 기회: < %d >번. ",rmchance);
+    if (flag==-1) printf("행맨이 그려지고 있어요. .\n");
+   // printf("\n");
+    return;
+}
+
+int CheckingAnswer(char *input, char answer[]){ //정답인지 확인하는 함수
+    if (strcmp(input, answer)==0) return 0;
+    return -1;
+}
+
+void PrintingResult(int n, Words ans){
+    if (n==-1) printf("틀렸습니다. 정답: %s %s\n",ans.word, ans.meaning);
+    
+    else if (n==0){
+        for (int i=0;i<4;i++) printf("*- + - * - +");
+        printf("\n");
+        for (int i=0;i<4;i++) printf("*- + - * - +");
+        printf("\n");
+        printf("                !!!!정답입니다!!!!                 \n");
+        printf("         정답: %s %s\n",ans.word, ans.meaning);
+        for (int i=0;i<4;i++) printf("*- + - * - +");
+        printf("\n");
+        for (int i=0;i<4;i++) printf("*- + - * - +");
+    }
+    return;
+}
+
+
+
+void UpdatingRecord(char *userid,int flag){ // user가 play한 기록이 있는지(기록 파일에 ID가 있는지 검사하고 있으면 새로 갱신, 없으면 추가하는 함수) , 정답이면 flag=1, 오답이면 0
+    FILE *f=fopen(RCFNAME,"a+");
+    if(ExistsId(userid)!=-1){ //존재, 포인터의 위치: 줄 끝
+        fseek(f,-2,SEEK_CUR);
+        fwrite("02",4,1,f);
+        return;
+    }
+    
+    fprintf(f,"%s %02d\n",userid,flag); //새 행에 추가
+    fclose(f);
+    return;
+}
+
+
+
+
+
+
+
+
+
+
+
+#endif /* GameFuctions_h */

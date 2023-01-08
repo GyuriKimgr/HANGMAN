@@ -1,6 +1,4 @@
 user1 1111
-ã…‡ãuser 1
 user2 2222
 user3 3333
-user4 44
-user4 4444
+user5 5555
