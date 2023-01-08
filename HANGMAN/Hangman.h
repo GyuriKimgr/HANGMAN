@@ -27,9 +27,9 @@ typedef struct{
     char *word; //단어
     int level; //난이도
     char *meaning; //의미
-}Words;
+}WORDS;
 
-Words data[30];
+WORDS data[30];
 
 typedef struct{ //랭킹 아이디 답을 맞춘 횟수
     char *id; //아이디

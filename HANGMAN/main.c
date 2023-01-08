@@ -21,7 +21,6 @@
 
  //단어 정보를 저장할 구조체 배열의 전역변수 선언
 int main(void) {
-    
     SavingWordData(); //단어별 데이터 저장
     
     LOGIN lgUser; //사용자의 로그인 정보를 기록할 구조체
@@ -69,12 +68,12 @@ int main(void) {
     }
     fclose(lgf);
     
-  //게임 기능 부분
+  //게임 구현 부분
    // RECORD Player[MAX_USER]; 사용자의 플레이 기록을 저장할 구조체 배열
     if(endinput!=1){
      //   FILE *rcf=fopen(RCFNAME, ""); //플레이 기록 파일 열기
     //    int playercnt=GetTotalLine(rcf); //hngrcd.txt 파일의 행 수 (유저 별 플레이 기록 저장 id, 정답률)
-        Words answer; //정답 단어에 대한 정보를 저장할 구조체
+        WORDS answer; //정답 단어에 대한 정보를 저장할 구조체
         char input_chr; //사용자가 입력
         do {
             printf("\n\n1. 게임 시작\n2. 랭킹 보기\n3. 종료하기\n"); scanf("%d",&temp);

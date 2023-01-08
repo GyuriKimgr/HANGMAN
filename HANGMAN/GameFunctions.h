@@ -11,7 +11,7 @@
 #include "Hangman.h"
 #include "Signup.h"
 
-extern Words data[];
+extern WORDS data[];
 extern char *engword[];
 extern char *krmeaning[];
 
@@ -25,7 +25,7 @@ void SavingWordData(void){
    return;
 }
 
-Words GeneratingProblem(Words ans){ //정답 구조체 데이터 생성 후 반환. 랜덤하게 생성
+WORDS GeneratingProblem(WORDS ans){ //정답 구조체 데이터 생성 후 반환. 랜덤하게 생성
     srand((int)time(NULL));
     int i=rand()%30;
     ans.word=data[i].word;
@@ -65,7 +65,7 @@ int CheckingAnswer(char *input, char answer[]){ //정답인지 확인하는 함�
     return -1;
 }
 
-void PrintingResult(int n, Words ans){
+void PrintingResult(int n, WORDS ans){
     if (n==-1) printf("틀렸습니다. 정답: %s %s\n",ans.word, ans.meaning);
     
     else if (n==0){
