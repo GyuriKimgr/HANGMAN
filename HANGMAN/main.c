@@ -26,7 +26,7 @@ int main(void) {
     LOGIN lgUser; //사용자의 로그인 정보를 기록할 구조체
     int temp,endinput=0;
     int num,num2; //로그인에 성공한 사용자의 계정 정보
-    FILE *lgf=fopen(LGFNAME, "r");
+    FILE *lgf=fopen(LGFNAME, "a+");
     int lgusercnt=GetTotalLine(lgf); //hnguser.txt 파일의 행 수(로그인 정보가 있는 사용자의 수)
     
    //로그인 및 회원가입
@@ -91,7 +91,7 @@ int main(void) {
                     printf("\n알파벳 소문자를 하나 입력하세요(정답을 입력하려면 !입력): ");
                     scanf(" %c",&input_chr);
                     if(input_chr!='!'){
-                        flag=SearchAndPrint(currentstat,answer.word,input_chr); //flag: 0 or -1
+                        flag=SearchAndPrint(currentstat,answer.word,input_chr); //존재하면 0, 없으면 -1
                         if (chance+flag==0) {
                             sleep(1);
                             printf("\n      행맨 완성. GAME OVER. . .\n");
@@ -105,9 +105,9 @@ int main(void) {
                         printf("정답은?: ");
                         scanf("%s",currentstat);
                         int n=CheckingAnswer(currentstat,answer.word);
+                        UpdatingRecord(input_id,n+1);
                         printf("loading..\n\n");
                         sleep(1);
-                        UpdatingRecord(input_id,n+1); //정답이면 1, 아니면 0을 인자로 넣음
                         PrintingResult(n,answer); //정답 입력 결과 출력 (0이면 정답, -1이면 오답)
                         break;
                     }

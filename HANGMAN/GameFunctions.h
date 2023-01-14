@@ -38,6 +38,9 @@ char *Init(char currentstat[], int len){ //정답 입력 상태를 초기화 시
     for(int i=0;i<len;i++){
         currentstat[i]='_';
     }
+    for(int i=len;i<=20;i++){
+        currentstat[i]=' ';
+    }
     return currentstat;
 }
 
@@ -55,8 +58,7 @@ int SearchAndPrint(char currentstat[],char answer[], char alph){ //사용자가 
 
 void PrintHANGMAN(int rmchance, int flag){ //결과에 따라 행맨 상태를 출력해주는 함수
     printf("남은 기회: < %d >번. ",rmchance);
-    if (flag==-1) printf("행맨이 그려지고 있어요. .\n");
-   // printf("\n");
+    if (flag==-1) printf("행맨이 그려지고 있어요..");
     return;
 }
 
@@ -74,7 +76,7 @@ void PrintingResult(int n, WORDS ans){
         for (int i=0;i<4;i++) printf("*- + - * - +");
         printf("\n");
         printf("                !!!!정답입니다!!!!                 \n");
-        printf("         정답: %s %s\n",ans.word, ans.meaning);
+        printf("            정답: %s %s\n",ans.word, ans.meaning);
         for (int i=0;i<4;i++) printf("*- + - * - +");
         printf("\n");
         for (int i=0;i<4;i++) printf("*- + - * - +");
@@ -82,19 +84,50 @@ void PrintingResult(int n, WORDS ans){
     return;
 }
 
+int ExistsRecord(char *input){ // 입력받은 id가 user파일에 존재하는지 검사하는 함수 (없다면 -1반환)
+    FILE *f=fopen(RCFNAME, "r");
+    char buffer[25]; char *buffer2;
+    int i=1;
+    int letters=GetletterinOneline(i);
+    if (f!=NULL){
+        while (fgets(buffer,letters+2, f)!=NULL) {
+            buffer2=strtok(buffer," ");
+            if (strcmp(buffer2,input)==0) {
+                fclose(f);
+                return i;} //전적 존재
+            else{
+                ++i;
+                letters=GetletterinOneline(i);
+                }
+         }
+        return -1;
+    }
+    else {
+        printf("파일 열기 실패\n");
+        return -100;}
+    
+    }
 
 
 void UpdatingRecord(char *userid,int flag){ // user가 play한 기록이 있는지(기록 파일에 ID가 있는지 검사하고 있으면 새로 갱신, 없으면 추가하는 함수) , 정답이면 flag=1, 오답이면 0
     FILE *f=fopen(RCFNAME,"a+");
-    if(ExistsId(userid)!=-1){
-        //이미 전적이 존재하는 경우 -> 파일을 부분적으로 수정하여 기록 갱신
-        return;
+    if(ExistsRecord(userid)>=1){
+        //이미 전적이 존재하는 경우 -> 파일을 부분적으로 수정(기존 값에 flag를 더한다)하여 기록 갱신
+        
+        
+       
     }
     
-    fprintf(f,"%s %d\n",userid,flag); //전적 없는 경우새 행에 추가
-    fclose(f);
+    else if (ExistsRecord(userid)==-1){
+        fprintf(f,"%s %d\n",userid,flag); //전적 없는 경우새 행에 추가
+        fclose(f);}
+    else {//파일 열기 실패
+        printf("파일 열기 실패\n");
+        return;}
     return;
+    
 }
+
 
 int compare (const void* a, const void* b) //qsort 비교함수 (내림차순)
 {

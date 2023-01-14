@@ -31,7 +31,6 @@
 		28125D8D296223F300908D0C /* Hangman.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Hangman.h; sourceTree = "<group>"; };
 		28125D902962B1C700908D0C /* GameFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameFunctions.h; sourceTree = "<group>"; };
 		28125D912968697400908D0C /* Signup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Signup.h; sourceTree = "<group>"; };
-		28125D92296A92BD00908D0C /* test.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +66,6 @@
 				28125D802962205B00908D0C /* main.c */,
 				28125D8D296223F300908D0C /* Hangman.h */,
 				28125D902962B1C700908D0C /* GameFunctions.h */,
-				28125D92296A92BD00908D0C /* test.c */,
 				28125D912968697400908D0C /* Signup.h */,
 			);
 			path = HANGMAN;

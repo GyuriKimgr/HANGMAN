@@ -3,3 +3,4 @@ user2 2
 user3 0
 user4 5
 user5 20
+user6 1
