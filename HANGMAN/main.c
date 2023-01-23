@@ -84,14 +84,15 @@ int main(void) {
                 for (int i=3;i>=1;i--) {
                     printf("%d!\n",i); sleep(1);}
                 printf("%s\n",currentstat);
+                PrintHANGMAN(chance,0); //행맨 상태 출력
                 while(1){
                     sleep(0.8);
                     int flag=0;
-                    PrintHANGMAN(chance+flag,flag); //행맨 상태 출력
                     printf("\n알파벳 소문자를 하나 입력하세요(정답을 입력하려면 !입력): ");
                     scanf(" %c",&input_chr);
                     if(input_chr!='!'){
                         flag=SearchAndPrint(currentstat,answer.word,input_chr); //존재하면 0, 없으면 -1
+                        PrintHANGMAN(chance+flag,flag); //행맨 상태 출력
                         if (chance+flag==0) {
                             sleep(1);
                             printf("\n      행맨 완성. GAME OVER. . .\n");
