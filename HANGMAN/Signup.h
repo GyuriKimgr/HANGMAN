@@ -13,22 +13,23 @@
 // 로그인 및 회원가입 프로그램 함수
 int ExistsId(char *);
 
-void NewUser(int usercnt,LOGIN User){
+int NewUser(int usercnt,LOGIN User){
     FILE *f=fopen(LGFNAME, "a+");
     if (f!=NULL){
         do{
-            usercnt++;
             printf("ID를 입력하세요(영어,숫자 포함 15자리 이내): "); scanf("%s",User.id);
             if (ExistsId(User.id)!=-1) printf("이미 존재하는 Id입니다.\n");
         }while(ExistsId(User.id)!=-1);
         printf("PASSWORD를 입력하세요(숫자 5자리 이내): "); scanf("%s",User.pwd);
         fprintf(f,"%s %s\n", User.id, User.pwd); //파일에 구조체 내용 쓰기
         fclose(f);
+        usercnt++;
         printf("\n회원가입 완료! 로그인 후 게임을 시작해보세요.\n");
+        return 0;
     }
     else {
         printf("파일 열기 실패\n");
-        return; //파일 열기 실패
+        return -1; //파일 열기 실패
     }
 }
 
@@ -76,10 +77,9 @@ int ExistsId(char *input){ // 입력받은 id가 user파일에 존재하는지 �
                 letters=GetletterinOneline(i);
                 }
          }
+        return -1;
     }
     else printf("파일 열기 실패\n"); return -100;
-    fclose(f);
-    return -1;
     }
 
  

@@ -36,10 +36,14 @@ int main(void) {
     while(temp!=3){
         switch(temp){
             case 2: //회원가입
-                NewUser(lgusercnt,lgUser);
-                lgusercnt++;
-                temp=1;
-                break;
+                if(NewUser(lgusercnt,lgUser)==0){
+                    lgusercnt++;
+                    temp=1;
+                    break;}
+                else{
+                    temp=3;
+                    break;
+                }
                 
             case 1: //로그인
                 printf("로그인 ID를 입력하세요: "); scanf("%s",input_id);
